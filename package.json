@@ -4,13 +4,15 @@
   "description": "Server for team backbone application",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js ",
+    "start": "./node_modules/nodemon/bin/nodemon.js app.js ",
+    "serve": "./node_modules/forever/bin/forever app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nathan Schuetz",
   "license": "UNLICENSED",
   "dependencies": {
     "express": "^4.16.4",
-    "nodemon": "^1.18.5"
+    "forever": "^0.15.3",
+    "nodemon": "^1.18.6"
   }
 }
