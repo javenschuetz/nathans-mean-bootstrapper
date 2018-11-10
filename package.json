@@ -1,0 +1,16 @@
+{
+  "name": "team-backbone-server",
+  "version": "0.0.1",
+  "description": "Server for team backbone application",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js ",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nathan Schuetz",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.16.4",
+    "nodemon": "^1.18.5"
+  }
+}
