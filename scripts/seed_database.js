@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// this script is to initialize an empty mongo database with some dummy data
+//    note: the script is NOT idempotent
+
 const MongoClient = require('mongodb').MongoClient;
 const db_name = "backbone-db";
 const url = `mongodb://localhost:27017/${db_name}`;

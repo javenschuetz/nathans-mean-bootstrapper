@@ -75,3 +75,4 @@ mongo
 	- make sure the script at scripts/start_mongo.sh is executable
 6. seed the db with some dummy data (for now)
 	- `node scripts/seed_database.js`
+	- this script is not idempotent and should not be run more than once
