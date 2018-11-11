@@ -1,8 +1,16 @@
-# The schema we are following
+/*
+The schema we are following
 
-## very messy so far, it will be nicer later
+Please update this every time change anything, it will make our lives easier
+in the future.
 
-users collection
+TODO:
+	Turn this into a script that just validates the schema- that way it can be
+	documetation and verification
+*/
+
+
+// users collection
 {
 	_id: "some objectID" //
 	email: "foo@bar.com", // a unique key
@@ -10,12 +18,10 @@ users collection
 	password_hash: "fjslflsfsjlk" // need to talk to victoria about this
 }
 
-posture_data collection
+// posture_data collection
 {
 	user_email: "foo@bar.ca",
-	// to make the data easy to condense over time
-	// could use week or month long-term, but this should be fine for now
-	period_length: "snapshot" or "day",
+	period_length: "snapshot" or "day", // we plan to condense the data later
 	measurements: [
 		{
 			period_end_timestamp: "some standard timestamp (todo)",
