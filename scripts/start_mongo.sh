@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # a wrapper around
 
 readonly data_path="$HOME"

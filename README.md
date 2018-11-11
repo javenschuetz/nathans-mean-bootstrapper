@@ -10,14 +10,10 @@ Start the server in server mode
 Start the server in dev mode
 	`npm start`
 
-Start mongo
-	`sudo scripts/start_mongo.sh`
-
-Stop mongo
-	`sudo service mongod stop`
-
-Restart mongo
-	`sudo service mongod restart`
+mongo
+	start: `sudo scripts/start_mongo.sh`
+	stop: ctrl-c (or find the pid and kill it)
+	todo: use services or systemd
 
 ## Dev Environment setup
 
@@ -35,17 +31,19 @@ Restart mongo
 	    User ubuntu
 	    Port 22
 	    IdentityFile "~/.ssh/<your ssh key>"
+	    LocalForward 37017 127.0.0.1:27017
+	    AddressFamily inet
 	```
 	- you can now connect via 'ssh backbone-server'
 	- IdentityFile may be unnecessary if you provide your usual public key
 	- you can call Host whatever you want, its just a name for your own use
-4. download Robo3T (used to work with mongo conveniently)
-	- put the directory somewhere convenient (/home/foo/installations/robo3t works)
-	- skip filling our your info
-	- create .local/share/applications/robo3T.desktop and setup shortcuts
-	- if scaling of the ui is an issue, there is a qt command line variable you
-	  can set in .profile (iirc).
-	- todo: fill in details for setting up robo3T
+4. install & configure robo3T
+	- `sudo snap install robo3t-snap`
+	- create a connection called 'my-computer' with address `localhost:27017`.
+	  This is for connecting to the db on your own machine.
+	- create a connection called 'backbone-server' with address `localhost:37017`
+	  This is for connecting to the database on the server.
+
 
 ## Server set up
 
@@ -72,5 +70,8 @@ Restart mongo
 4. mount in '~/data' directory
 	- todo: change this to /data
 	- note: leave owner as 'root'
+		- todo: create a mongodb user instead?
 5. config mongo to use this storage device
 	- make sure the script at scripts/start_mongo.sh is executable
+6. seed the db with some dummy data (for now)
+	- `node scripts/seed_database.js`
