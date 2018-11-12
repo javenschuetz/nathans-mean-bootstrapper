@@ -5,7 +5,9 @@ The server code of Team Backbone's Posture monitoring wearable
 ## Starting and Stopping things
 
 Start the server in server mode
-	- `npm run serve`
+	- `sudo PORT=80 npm run serve`
+	- you can ctrl-c out of this a few seconds later since its using a module
+	  called 'forever' to run
 
 Start the server in dev mode
 	- `npm start`
@@ -55,6 +57,7 @@ mongo
 4. vpc
 	- use the default one (for now)
 5. use rsync to transfer the code over
+	- `rsync -avzhe ssh team-backbone-server/ backbone-server:~/team-backbone-server`
 	- todo: use some CI tool to stash this code on s3 and use the cli to grab it
 6. start mongo (instructions above)
 

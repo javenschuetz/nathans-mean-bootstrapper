@@ -2,10 +2,10 @@
   "name": "team-backbone-server",
   "version": "0.0.1",
   "description": "Server for team backbone application",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js app.js ",
-    "serve": "./node_modules/forever/bin/forever app.js",
+    "start": "./node_modules/nodemon/bin/nodemon.js server.js ",
+    "serve": "./node_modules/forever/bin/forever start server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Nathan Schuetz",
@@ -18,7 +18,8 @@
     "forever": "^0.15.3",
     "mongodb": "^3.1.9",
     "passport": "^0.4.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "path": "^0.12.7"
   },
   "devDependencies": {
     "nodemon": "^1.18.6"

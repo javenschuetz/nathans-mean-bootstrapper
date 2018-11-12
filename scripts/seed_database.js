@@ -3,7 +3,7 @@
 // this script is to initialize an empty mongo database with some dummy data
 //    note: the script is NOT idempotent
 
-const mongo_client = require('mongodb').mongo_client;
+const mongo_client = require('mongodb').MongoClient;
 const db_name = 'backbone-db';
 const url = `mongodb://localhost:27017/${db_name}`;
 
@@ -50,7 +50,7 @@ function seed_users(cb) {
 
         dbo.collection('users').insertMany(seeded_users, function(err, res) {
             if (err) return cb(err);
-            console.log(`Inserted ${res.insertedCount} documents`;
+            console.log(`Inserted ${res.insertedCount} documents`);
             db.close();
             return cb(null);
         });
@@ -90,7 +90,7 @@ function seed_posture_data(cb) {
         const dbo = db.db(db_name);
         dbo.collection('posture_data').insertMany(seeded_posture_data, function(err, res) {
             if (err) return cb(err);
-            console.log(`Inserted ${res.insertedCount} documents`;
+            console.log(`Inserted ${res.insertedCount} documents`);
             db.close();
             return cb(null);
         });
