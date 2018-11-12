@@ -18,24 +18,21 @@ mongo
 ## Dev Environment setup
 
 1. clone git repo
-2. run install script (does not yet exist)
-	- install nodejs
-	- install npm (should come with node)
-	- install nodemon globally via npm
-	- `npm install nodemon --global`
-
+2. install npm modules
+	- `npm install`
 3. set up ssh config file
 	```
 	Host backbone-server
 	    HostName 100.24.164.212
 	    User ubuntu
 	    Port 22
-	    IdentityFile "~/.ssh/<your ssh key>"
+	    IdentityFile "~/.ssh/<file containing your ssh key>"
 	    LocalForward 37017 127.0.0.1:27017
 	    AddressFamily inet
 	```
 	- you can now connect via 'ssh backbone-server'
-	- IdentityFile may be unnecessary if you provide your usual public key
+	- IdentityFile may be unnecessary if you get your usual public key into the
+	  authorized keys section of the server
 	- you can call Host whatever you want, its just a name for your own use
 4. install & configure robo3T
 	- `sudo snap install robo3t-snap`
@@ -58,14 +55,14 @@ mongo
 4. vpc
 	- use the default one (for now)
 5. use rsync to transfer the code over
-	todo: stash this code on s3 and use the cli to grab it
+	- todo: use some CI tool to stash this code on s3 and use the cli to grab it
 6. start mongo (instructions above)
 
-[1] make new database ebs
+[1] make new database ebs (if necessary)
 1. create 8GB encrypted ebs
 	- todo: decide if a non-default key is better
 2. attach to an instance
-	note: the instance seems to be able to auto-decrypt it
+	- note: the instance seems to be able to auto-decrypt it
 3. format it to an ext4 filesystem
 4. mount in '~/data' directory
 	- todo: change this to /data
