@@ -5,15 +5,15 @@ The server code of Team Backbone's Posture monitoring wearable
 ## Starting and Stopping things
 
 Start the server in server mode
-	`npm run serve`
+	- `npm run serve`
 
 Start the server in dev mode
-	`npm start`
+	- `npm start`
 
 mongo
-	start: `sudo scripts/start_mongo.sh`
-	stop: ctrl-c (or find the pid and kill it)
-	todo: use services or systemd
+	- start: `sudo scripts/start_mongo.sh`
+	- stop: ctrl-c (or find the pid and kill it)
+	- todo: use services or systemd
 
 ## Dev Environment setup
 

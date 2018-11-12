@@ -1,10 +1,12 @@
-"use strict";
+'use strict';
 
 // just to get something online quickly
 
 const fs = require('fs');
 const express = require('express'); // express makes request handling nice and boring
 const app = express();
+
+app.set('view-engine', 'ejs');
 
 // in the html, 'assets' is an alias for the 'public' folder
 app.use('/assets', express.static(`${__dirname}/public`));

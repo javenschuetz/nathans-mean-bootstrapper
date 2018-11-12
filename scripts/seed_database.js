@@ -4,7 +4,7 @@
 //    note: the script is NOT idempotent
 
 const mongo_client = require('mongodb').mongo_client;
-const db_name = "backbone-db";
+const db_name = 'backbone-db';
 const url = `mongodb://localhost:27017/${db_name}`;
 
 function create_db_and_collections(cb) {
@@ -12,13 +12,13 @@ function create_db_and_collections(cb) {
         if (err) return cb(err);
         const dbo = db.db(db_name);
 
-        dbo.createCollection("users", function(err, res) {
+        dbo.createCollection('users', function(err, res) {
             if (err) return cb(err);
-            console.log("users collection created!");
+            console.log('users collection created!');
 
-            dbo.createCollection("posture_data", function(err, res) {
+            dbo.createCollection('posture_data', function(err, res) {
                 if (err) return cb(err);
-                console.log("posture_data collection created!");
+                console.log('posture_data collection created!');
                 db.close();
                 return cb(null);
             });
@@ -48,7 +48,7 @@ function seed_users(cb) {
         ];
         const dbo = db.db(db_name);
 
-        dbo.collection("users").insertMany(seeded_users, function(err, res) {
+        dbo.collection('users').insertMany(seeded_users, function(err, res) {
             if (err) return cb(err);
             console.log(`Inserted ${res.insertedCount} documents`;
             db.close();
@@ -63,7 +63,7 @@ function seed_posture_data(cb) {
 
         const seeded_posture_data = [{
             user_email: 'banjo@jones.ca',
-            period_length: "snapshot",
+            period_length: 'snapshot',
             measurements: []
         }];
 
@@ -74,7 +74,7 @@ function seed_posture_data(cb) {
                     // subtract 0-10% from the date. Hopefully this is reasonable?
                     period_end_timestamp: new Date().getTime() -
                             Math.random() * new Date().getTime() * .1,
-                    position_class: "good"
+                    position_class: 'good'
                 }
             );
             seeded_posture_data[0].measurements.push(
@@ -82,13 +82,13 @@ function seed_posture_data(cb) {
                     // subtract 0-10% from the date. Hopefully this is reasonable?
                     period_end_timestamp: new Date().getTime() -
                             Math.random() * new Date().getTime() * .1,
-                    position_class: "bad"
+                    position_class: 'bad'
                 }
             );
         }
 
         const dbo = db.db(db_name);
-        dbo.collection("posture_data").insertMany(seeded_posture_data, function(err, res) {
+        dbo.collection('posture_data').insertMany(seeded_posture_data, function(err, res) {
             if (err) return cb(err);
             console.log(`Inserted ${res.insertedCount} documents`;
             db.close();
