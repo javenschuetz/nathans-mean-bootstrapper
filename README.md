@@ -5,7 +5,7 @@ The server code of Team Backbone's Posture monitoring wearable
 ## Starting and Stopping things
 
 Start the server in server mode
-	- `sudo PORT=80 npm run serve`
+	- `npm run serve`
 	- you can ctrl-c out of this a few seconds later since its using a module
 	  called 'forever' to run
 
