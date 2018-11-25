@@ -22,14 +22,6 @@ readonly our_site='posturetracking.com'
 # install nginx
 sudo apt install nginx -y
 
-# to see some options
-# sudo ufw app list
-
-# set up ufw rules
-# todo - is this redundant with our other http / https ufw rule?
-sudo ufw allow 'Nginx HTTP'
-sudo ufw allow 'Nginx HTTPS'
-
 # disable default server
 sudo rm ${sites_enabled_path}/default
 
