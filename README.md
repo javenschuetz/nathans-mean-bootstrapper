@@ -20,6 +20,7 @@ mongo
 ## Dev Environment setup
 
 1. clone git repo
+1.5. go to init machine directory, THEN execute init machine.sh
 2. install npm modules
 	- `npm install`
 3. set up ssh config file
@@ -61,6 +62,8 @@ mongo
 	- todo: use some CI tool to stash this code on s3 and use the cli to grab it
 6. start mongo (instructions above)
 
+1.5. go to init machine directory, THEN execute init machine.sh
+
 [1] make new database ebs (if necessary)
 1. create 8GB encrypted ebs
 	- todo: decide if a non-default key is better
@@ -76,3 +79,11 @@ mongo
 6. seed the db with some dummy data (for now)
 	- `node scripts/seed_database.js`
 	- this script is not idempotent and should not be run more than once
+
+
+# setup on windows
+
+1. Microsoft Store - download Ubuntu 18.04 LTS
+2. install windows subsystem for linux
+3. set up ssh keys and then clone git repo
+4. continue as above

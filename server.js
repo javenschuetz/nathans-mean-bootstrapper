@@ -16,7 +16,13 @@ const app = express();
 
 // ****************************************************************** some setup
 app.set('view engine', 'ejs'); // says 'we're using ejs'
-app.set('views', path.join(`${__dirname}/public`)); // says 'our ejs is here'
+app.set('views', path.join(`${__dirname}/client`)); // says 'our ejs is here'
+
+// in the html, 'assets' is an alias for the 'public' folder
+
+// todo - only use static for the informational site
+app.use('/static', express.static(`${__dirname}/client/public_static`));
+
 
 // ****************************************************************** middleware
 // todo - review how this works in more detail
@@ -37,7 +43,7 @@ passport.serializeUser((user, done) => {
 	done(null, user.email);
 });
 
-// says 'these are from the serverside session - who does it match?'
+// says 'these are from the serverside session' - asks 'who does it match?'
 passport.deserializeUser((email, done) => {
 	users.find_user(email, (err, user) => {
 		done(err, user);
@@ -60,49 +66,80 @@ passport.use(new local_strategy(
 		}
 ));
 
-// ************************************************************** route handlers
-// todo - just make a router middleware when we have more than 3-4 routes
 
-// in the html, 'assets' is an alias for the 'public' folder
-app.use('/assets', express.static(`${__dirname}/public`));
+// ********************************************************* auth route handlers
+// These route handlers should use the 'public' directory for all
+// non-authenticated requests
 
-app.get('/data_viewer', (req, res) => {
-	// todo - I had assumed we were using hard-to-guess session ids,
-	// not usernames in the cookie. This seems fishy
-	if (req.session && req.session.passport && req.session.passport.user) {
-		res.render('pages/data_viewer');
-	} else {
-		res.redirect('/login');
-	}
-});
-
+// login page
 app.get('/login', (req, res) => {
-	res.render('pages/login');
+	// says 'if logged in, skip login. else, send to login page'
+	if (req.session && req.session.passport && req.session.passport.user) {
+		res.redirect('/app');
+	} else {
+		res.render('public/login');
+	}
+
 });
 
-// a 'catch all' handler for when nothing else is matched
-app.get('*', (req, res) => {
-	res.render('index');
-});
-
-// passport.authenticate seems to return some middleware?
-// note: local is the passport.js 'strategy'
-// this local strategy was set up in app.use above
-app.post('/login',
-		passport.authenticate('local',
+/*
+	passport.authenticate seems to return some middleware?
+	note: local is the passport.js 'strategy'
+	this local strategy was set up in app.use above
+*/
+app.post('/login', passport.authenticate('local',
+		// TODO - check if we need to sanitize anything
 		{
-			successRedirect: '/data_viewer',
-            failureRedirect: '/login',
+			successRedirect: '/app',
+            failureRedirect: '/app/login',
             failureFlash: false // if true, lets us display err message to user
         }
     )
 );
 
 
+// ****************************************************** web app route handlers
+
+// middleware to help check for signins
+function check_auth_status (req, res, next) {
+	if (req.session && req.session.passport && req.session.passport.user) {
+		next();
+	} else {
+		res.redirect('/login');
+	}
+}
+
+// our main web app
+app.get('/app', check_auth_status, (req, res) => {
+	res.render('app');
+});
+
+app.use( "/app/assets", [ check_auth_status, express.static( __dirname + "/client" ) ] );
+
+// catches junk uris
+app.get('/app/*', check_auth_status, (req, res) => {
+	res.redirect('/app');
+});
+
+
+
+// ********************************************** unauthenticated route handlers
+//	These route handlers should only serve files from the 'public' directory
+
+// Default landing page is our informational site
+app.get('/', (req, res) => {
+	res.sendFile(`${__dirname}/client/public/index.html`);
+});
+
+// Catch-all
+app.get('*', (req, res) => {
+	res.redirect('/');
+});
+
+
 
 // *********************************************************************** serve
-// server listens on port X
-//    set to 80 for http requests
-//    later, nginx will listen on 80 and forward requests here
+// server listens on port X where Nginx is configured to forward requests to
+
 const port = process.env.PORT || 9000;
 app.listen(port);
