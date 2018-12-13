@@ -1,4 +1,14 @@
-I am main.html
-<div>
-    sanity check - did ng-view work? {{loaded}}
+sanity check - did ng-view work? {{loaded}}
+
+<div ng-controller="line_controller">
+	sanity check - did line controller work? {{loaded2}}
+	<canvas id="line"
+					class="chart chart-line"
+					chart-data="data"
+					chart-labels="labels"
+					chart-series="series"
+					chart-options="options"
+					chart-dataset-override="datasetOverride"
+					chart-click="onClick">
+	</canvas>
 </div>

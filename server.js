@@ -102,6 +102,7 @@ app.post('/login', passport.authenticate('local',
 
 // middleware to help check for signins
 function check_auth_status (req, res, next) {
+	// return next(); // todo delete this, its only for dev work and its dangerous
 	if (req.session && req.session.passport && req.session.passport.user) {
 		next();
 	} else {
