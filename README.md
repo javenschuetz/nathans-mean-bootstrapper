@@ -18,10 +18,10 @@ mongo stop: ctrl-c (or find the pid and kill it)
 ## Dev Environment setup
 
 1. clone git repo
-1.5. go to init machine directory, THEN execute init machine.sh
-2. install npm modules
+2. go to init machine directory, THEN execute init machine.sh
+3. install npm modules
 	- `npm install`
-3. set up ssh config file
+4. set up ssh config file
 	```
 	Host backbone-server
 	    HostName 100.24.164.212
@@ -35,7 +35,7 @@ mongo stop: ctrl-c (or find the pid and kill it)
 	- IdentityFile may be unnecessary if you get your usual public key into the
 	  authorized keys section of the server
 	- you can call Host whatever you want, its just a name for your own use
-4. install & configure robo3T
+5. install & configure robo3T
 	- `sudo snap install robo3t-snap`
 	- create a connection called 'my-computer' with address `localhost:27017`.
 	  This is for connecting to the db on your own machine.
