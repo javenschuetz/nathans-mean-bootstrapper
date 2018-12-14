@@ -81,9 +81,28 @@ mongo
 	- this script is not idempotent and should not be run more than once
 
 
-# setup on windows
+# dev environment pre-setup on windows
 
-1. Microsoft Store - download Ubuntu 18.04 LTS
-2. install windows subsystem for linux
-3. set up ssh keys and then clone git repo
-4. continue as above
+1. Download & install Virtual Box
+2. Download & install Vagrant (see below for some commands)
+3. Clone the git repository to some directory
+3. Google how to set up a Vagrantfile for ubuntu 18.04 (bionic beaver)
+	- this is probably just copy pasting a paragraph of commands from a blog post
+	- todo - include this file in the root of the repository
+4. use `vagrant ssh` when within the directory in your terminal to enter the vm
+5. find this directory mounted at `/vagrant`
+6. copy the contents to some directory and continue as above
+
+## some vagrant commands
+
+`vagrant up` - start a vm
+
+`vagrant halt` - force stop vm without deleting it
+
+`vagrant suspend` - like halt, but graceful and not forced
+
+`vagrant ssh` - ssh into a vm
+
+`vagrant destroy` - delete a vm
+
+`vagrant status` -get status of vms
