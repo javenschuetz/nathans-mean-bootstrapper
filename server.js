@@ -1,135 +1,142 @@
 'use strict';
 
-// ******************************************************************** requires
-const body_parser = require('body-parser');
-const express = require('express'); // for easy & boring request handling
-const express_session = require('express-session');
-const fs = require('fs');
-const local_strategy = require('passport-local');
-const passport = require('passport');
-const path = require('path'); // helps resolve file paths
-const users = require('./db-wrappers/users');
+// libraries (alphabetic)
+const bcrypt = require('bcryptjs');					// cryptographic hashing algorithm for passwords
+const body_parser = require('body-parser'); 		// to give us access to body of http requests
+const client_sessions = require('client-sessions');	// mozilla library to implement encrypted client-side sessions
+const csurf = require('csurf');						// mitigates against cross site request forgeries
+const express = require('express');
+const helmet = require('helmet');					// add some nice security headers
+const mongoose = require('mongoose');				// mongo schemas
+const path = require('path'); 						// helps resolve file paths
 
-const app = express();
+// project modules
+const User = require('./models/User');				// User Schema
 
 
 
 // ****************************************************************** some setup
-app.set('view engine', 'ejs'); // says 'we're using ejs'
-app.set('views', path.join(`${__dirname}/client`)); // says 'our ejs is here'
+const app = express();
+mongoose.connect('mongodb://localhost/backbone-db');		// maintains a connection to mongo
+app.set('view engine', 'ejs');								// says 'we're using ejs'
+app.set('views', path.join(`${__dirname}/views`));			// says 'our ejs is here'
+app.use('/static', express.static(`${__dirname}/static`)); 	// sort of automatic route handling for this directory
 
-// in the html, 'assets' is an alias for the 'public' folder
-
-// todo - only use static for the informational site
-app.use('/static', express.static(`${__dirname}/client/public_static`));
 
 
 // ****************************************************************** middleware
-// todo - review how this works in more detail
-// it basically modifies our request object to hold some session information
-app.use(express_session({
-	secret: "we need to have this not be plaintext", // todo fix the secret
-	resave: false,
-	saveUninitialized: false
+app.use(helmet());
+
+// to get request bodies in object form
+app.use(body_parser.urlencoded({
+    extended: false
 }));
-app.use(body_parser.urlencoded({extended: false})); // todo - what is urlencoded?
 
-app.use(passport.initialize());
-app.use(passport.session());
+// set up client-side sessions
+app.use(client_sessions({
+    cookieName: 'session',
+    secret: process.env.BACKBONE_SECRET, 	// basically a symmetric encryption key
+    duration: 1000 * 60 * 30,				// 30 minutes
+    activeDuration: 1000 * 60 * 5,
+    httpOnly: true,
+    secure: true,
+    ephemeral: true
+}));
 
-// says 'this is what we're storing in the serverside session'
-// todo - we may want to use _id instead of email
-passport.serializeUser((user, done) => {
-	done(null, user.email);
+// lookup user ahead of time, must be after client_sessions
+app.use((req, res, next) => {
+    // if session does not exist, it was not found above by client_sessions.
+    if (!req.session) {
+        return next();
+    }
+
+    User.findById(req.session.user_id, (err, user) => {
+        if (err) return next(err);
+        if (!user) return next();
+
+
+        delete user.password;	// unwanted if session exists. todo: don't pull from mongo
+        req.user = user;
+        res.locals.user = user;	// for serverside rendering variables
+
+        return next();
+    });
 });
 
-// says 'these are from the serverside session' - asks 'who does it match?'
-passport.deserializeUser((email, done) => {
-	users.find_user(email, (err, user) => {
-		done(err, user);
-	});
+app.use(csurf());
+
+// confirms that login was verified above
+function login_required(req, res, next) {
+    if (!req.user) {
+        return res.redirect('/login');
+    }
+
+    return next();
+}
+
+
+
+// ************************************************************ register & login
+app.get('/register', (req, res) => {
+    res.render('register', {csrfToken: req.csrfToken()});
 });
 
-passport.use(new local_strategy(
-	{ usernameField: 'email'}, // by default it expects field to be 'username'
-	(email, password, done) => {
-	    users.find_user(email, (err, user) => {
-			if (err) return done(err);
-			if (!user) {
-				return done(null, false, { message: 'Incorrect email.' });
-			}
-			if (user.password_hash !== password) { // todo - use real validation
-				return done(null, false, { message: 'Incorrect password.' });
-			}
-				return done(null, user);
-			});
-		}
-));
+app.post('/register', (req, res) => {
+    // make sure to replace pw with hashed password before storing the user
+    const hash = bcrypt.hashSync(req.body.password, parseInt(process.env.WORK_FACTOR));
+    req.body.password = hash;
+    let user = new User(req.body);
 
+    user.save((err) => {
+        if (err) {
+        	// todo - make use of this (flash? template variable?)
+            let error = "error when saving this user";
 
-// ********************************************************* auth route handlers
-// These route handlers should use the 'public' directory for all
-// non-authenticated requests
-
-// login page
-app.get('/login', (req, res) => {
-	// says 'if logged in, skip login. else, send to login page'
-	if (req.session && req.session.passport && req.session.passport.user) {
-		res.redirect('/app');
-	} else {
-		res.render('public/login');
-	}
-
-});
-
-/*
-	passport.authenticate seems to return some middleware?
-	note: local is the passport.js 'strategy'
-	this local strategy was set up in app.use above
-*/
-app.post('/login', passport.authenticate('local',
-		// TODO - check if we need to sanitize anything
-		{
-			successRedirect: '/app',
-            failureRedirect: '/app/login',
-            failureFlash: false // if true, lets us display err message to user
+            if (err.code === 11000) {
+                error = "email taken";
+            }
+            // not a PRG, but should be fine
+            return res.render('register', {csrfToken: req.csrfToken()});
         }
-    )
-);
+        return res.redirect('login');
+    });
+});
+
+app.get('/login', (req, res) => {
+    res.render('login', {csrfToken: req.csrfToken()});
+});
+
+// todo - rate limiting in nginx for this
+app.post('/login', (req, res) => {
+    User.findOne({email: req.body.email}, (err, user) => {
+        if (err || !user || !bcrypt.compareSync(req.body.password, user.password)) {
+            return res.render('login', {csrfToken: req.csrfToken()});
+        }
+
+        // if logged in, use client-side session to stay logged in
+        req.session.user_id = user._id;
+        return res.redirect('dashboard');
+    });
+});
+
 
 
 // ****************************************************** web app route handlers
-
-// middleware to help check for signins
-function check_auth_status (req, res, next) {
-	// return next(); // todo delete this, its only for dev work and its dangerous
-	if (req.session && req.session.passport && req.session.passport.user) {
-		next();
-	} else {
-		res.redirect('/login');
-	}
-}
-
-// our main web app
-app.get('/app', check_auth_status, (req, res) => {
-	res.render('app');
+app.get('/dashboard', login_required, (req, res) => {
+    res.render('dashboard');
 });
 
-app.use( "/app/assets", [ check_auth_status, express.static( __dirname + "/client" ) ] );
-
-// catches junk uris
-app.get('/app/*', check_auth_status, (req, res) => {
-	res.redirect('/app');
+app.get('/logout', (req, res) => {
+	res.clearCookie("session");
+	res.redirect('/');
 });
 
 
 
 // ********************************************** unauthenticated route handlers
-//	These route handlers should only serve files from the 'public' directory
-
 // Default landing page is our informational site
 app.get('/', (req, res) => {
-	res.sendFile(`${__dirname}/client/public/index.html`);
+	res.render('index');
 });
 
 // Catch-all
@@ -137,10 +144,14 @@ app.get('*', (req, res) => {
 	res.redirect('/');
 });
 
+// error handling
+app.use((err, req, res, next) => {
+  res.status(500).send("Something broke :( Please try again.");
+});
+
 
 
 // *********************************************************************** serve
 // server listens on port X where Nginx is configured to forward requests to
-
-const port = process.env.PORT || 9000;
+const port = process.env.BACKBONE_PORT || 9000;
 app.listen(port);

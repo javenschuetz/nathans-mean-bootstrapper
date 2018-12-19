@@ -1,0 +1,26 @@
+<% include ./partials/top.ejs %>
+
+<form action="/register" method="post">
+  <div>
+    <label>First Name:</label>
+    <input type="text" name="first_name" required/>
+  </div>
+  <div>
+    <label>Last Name:</label>
+    <input type="text" name="last_name" required/>
+  </div>
+  <div>
+    <label>Email:</label>
+    <input type="email" name="email" required/>
+  </div>
+  <div>
+    <label>Password:</label>
+    <input type="password" name="password" required/>
+  </div>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" required/>
+  <div>
+    <input type="submit" value="Log In"/>
+  </div>
+</form>
+
+<% include ./partials/bottom.ejs %>

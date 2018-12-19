@@ -1,6 +1,6 @@
 'use strict';
 
-const pages = '/app/assets/pages';
+const pages = '/static';
 
 angular.module('backbone_app', ['ngRoute', 'chart.js'])
 .config(function($routeProvider) {

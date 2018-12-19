@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Team Backbone - skeleton app</title>
+  <title>Posture Tracking - Dashboard</title>
 
   <!-- style -->
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
@@ -9,19 +9,8 @@
 </head>
 <body ng-app="backbone_app">
 
-<header>
-  <nav class="navbar navbar-default">
-    <div class="container">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/app">Backbone test</a>
-      </div>
-      <ul class="nav navbar-nav navbar-right">
-        <!-- todo - logout does not work! -->
-        <li><a href="/logout"><i class="fa fa-home">Log Out</i></a></li>
-      </ul>
-    </div>
-  </nav>
-</header>
+  <% include ./partials/nav-bar.ejs %>
+  Welcome, <%= user.first_name %>!
 
   <div ng-controller="sanity_check_ctrl">
     sanity check - did angular load? {{loaded}}
@@ -38,7 +27,7 @@
   <script src="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script>
 
   <!-- custom js -->
-  <script src="/app/assets/client.js"></script>
+  <script src="/static/client.js"></script>
 
 </body>
 </html>
