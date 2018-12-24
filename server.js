@@ -1,26 +1,26 @@
 'use strict';
 
 // libraries (alphabetic)
-const bcrypt = require('bcryptjs');					// cryptographic hashing algorithm for passwords
-const body_parser = require('body-parser'); 		// to give us access to body of http requests
-const client_sessions = require('client-sessions');	// mozilla library to implement encrypted client-side sessions
-const csurf = require('csurf');						// mitigates against cross site request forgeries
+const bcrypt = require('bcryptjs');                 // cryptographic hashing algorithm for passwords
+const body_parser = require('body-parser');         // to give us access to body of http requests
+const client_sessions = require('client-sessions'); // mozilla library to implement encrypted client-side sessions
+const csurf = require('csurf');                     // mitigates against cross site request forgeries
 const express = require('express');
-const helmet = require('helmet');					// add some nice security headers
-const mongoose = require('mongoose');				// mongo schemas
-const path = require('path'); 						// helps resolve file paths
+const helmet = require('helmet');                   // add some nice security headers
+const mongoose = require('mongoose');               // mongo schemas
+const path = require('path');                       // helps resolve file paths
 
 // project modules
-const User = require('./models/User');				// User Schema
+const User = require('./models/User');              // User Schema
 
 
 
 // ****************************************************************** some setup
 const app = express();
-mongoose.connect('mongodb://localhost/backbone-db');		// maintains a connection to mongo
-app.set('view engine', 'ejs');								// says 'we're using ejs'
-app.set('views', path.join(`${__dirname}/views`));			// says 'our ejs is here'
-app.use('/static', express.static(`${__dirname}/static`)); 	// sort of automatic route handling for this directory
+mongoose.connect('mongodb://localhost/backbone-db');        // maintains a connection to mongo
+app.set('view engine', 'ejs');                              // says 'we're using ejs'
+app.set('views', path.join(`${__dirname}/views`));          // says 'our ejs is here'
+app.use('/static', express.static(`${__dirname}/static`));  // sort of automatic route handling for this directory
 
 
 
@@ -35,8 +35,8 @@ app.use(body_parser.urlencoded({
 // set up client-side sessions
 app.use(client_sessions({
     cookieName: 'session',
-    secret: process.env.BACKBONE_SECRET, 	// basically a symmetric encryption key
-    duration: 1000 * 60 * 30,				// 30 minutes
+    secret: process.env.BACKBONE_SECRET,    // basically a symmetric encryption key
+    duration: 1000 * 60 * 30,               // 30 minutes
     activeDuration: 1000 * 60 * 5,
     httpOnly: true,
     secure: true,
@@ -55,9 +55,9 @@ app.use((req, res, next) => {
         if (!user) return next();
 
 
-        delete user.password;	// unwanted if session exists. todo: don't pull from mongo
+        delete user.password;   // unwanted if session exists. todo: don't pull from mongo
         req.user = user;
-        res.locals.user = user;	// for serverside rendering variables
+        res.locals.user = user; // for serverside rendering variables
 
         return next();
     });
@@ -77,11 +77,47 @@ function login_required(req, res, next) {
 
 
 // ************************************************************ register & login
+// OWASP guidelines: https://www.owasp.org/index.php/Authentication_Cheat_Sheet
+function check_password_strength(email, password) {
+
+    const length = password.length;
+    if (length < 10) return { strong: false, reason: 'password is too short'};
+    if (length > 128) return { strong: false, reason: 'password is too long'};
+    if (password.includes(email)) return { strong: false, reason: 'password cannot contain that'};
+    if (password.includes('password')) return { strong: false, reason: 'password cannot contain that'};
+    if (password.includes('Password')) return { strong: false, reason: 'password cannot contain that'};
+
+    let score = 0;
+    if (length >= 12) score++;
+    if (length >= 16) score++;
+    if (password.match(/\d+/)) score++; // 1+ numbers
+    if (password.match(/[a-z]/)) score++; // lowercase
+    if (password.match(/[A-Z]/)) score++; // uppercase
+    if (password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,£,(,)]/)) score++; // special characters
+
+    return {
+        strong: score >= 3,
+        reason: `unless a password is quite long, it must satisfy 3/4 of the following criteria:
+    - contain a number
+    - contain a lowercase letter
+    - contain an uppercase letter
+    - contain a special character`
+    };
+}
+
+
+
 app.get('/register', (req, res) => {
     res.render('register', {csrfToken: req.csrfToken()});
 });
 
 app.post('/register', (req, res) => {
+    const password_strength = check_password_strength(req.body.email, req.body.password);
+    if (!password_strength.strong) {
+        // todo - use the nice error messages in the rendering so the user can see them
+        return res.render('register', {csrfToken: req.csrfToken()});
+    }
+
     // make sure to replace pw with hashed password before storing the user
     const hash = bcrypt.hashSync(req.body.password, parseInt(process.env.WORK_FACTOR));
     req.body.password = hash;
@@ -89,7 +125,7 @@ app.post('/register', (req, res) => {
 
     user.save((err) => {
         if (err) {
-        	// todo - make use of this (flash? template variable?)
+            // todo - make use of this (flash? template variable?)
             let error = "error when saving this user";
 
             if (err.code === 11000) {
@@ -127,8 +163,8 @@ app.get('/dashboard', login_required, (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-	res.clearCookie("session");
-	res.redirect('/');
+    res.clearCookie("session");
+    res.redirect('/');
 });
 
 
@@ -136,12 +172,12 @@ app.get('/logout', (req, res) => {
 // ********************************************** unauthenticated route handlers
 // Default landing page is our informational site
 app.get('/', (req, res) => {
-	res.render('index');
+    res.render('index');
 });
 
 // Catch-all
 app.get('*', (req, res) => {
-	res.redirect('/');
+    res.redirect('/');
 });
 
 // error handling
