@@ -77,12 +77,12 @@ app.use('/accounts', require('./accounts/account_routes'));
 
 // main app dashboard
 app.get('/dashboard', login_required, (req, res) => {
-    res.render('dashboard');
+    res.render('dashboard', {logged_in: true});
 });
 
 // Default landing page is our informational site
 app.get('/', (req, res) => {
-    res.render('index');
+    res.render('index', {logged_in: !!req.user});
 });
 
 // Catch-all

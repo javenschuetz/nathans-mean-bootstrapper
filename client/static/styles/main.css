@@ -1,8 +1,12 @@
 /*------------------------------------*\
-  #generic rules
+  # Posture Tracking App - Main Stylesheet
+\*------------------------------------*/
+
+/*------------------------------------*\
+  # generic rules
 \*------------------------------------*/
 * {
-	font-family: Helvettica, sans-serif;
+	font-family: Roboto, Helvettica, sans-serif;
 	box-sizing: border-box;
 }
 
@@ -30,6 +34,7 @@ a {
 	min-width: 48px;
 	min-height: 48px;
 }
+
 
 
 /*------------------------------------*\
@@ -60,6 +65,12 @@ header a {
 	color: white;
 }
 
+header img {
+	margin: 5px;
+	margin-left: 15px;
+	max-height: 50px;
+}
+
 header ul{
 	font-size: 2em;
 	margin-left: 15px;
@@ -82,4 +93,9 @@ header ul{
 .bb-navbar {
 	align-items: stretch;
 	display: flex;
+}
+
+.bb-navbar-items {
+	margin: 5px;
+	margin-right: 15px;
 }

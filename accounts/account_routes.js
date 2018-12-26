@@ -20,14 +20,14 @@ router.use(csurf());
 
 // ********************************************************************** routes
 router.get('/login', (req, res) => {
-    res.render('login', {csrfToken: req.csrfToken()});
+    res.render('login', {csrfToken: req.csrfToken(), logged_in: !!req.user});
 });
 
 // todo - rate limiting in nginx for this
 router.post('/login', (req, res) => {
     User.findOne({email: req.body.email}, (err, user) => {
         if (err || !user || !bcrypt.compareSync(req.body.password, user.password)) {
-            return res.render('login', {csrfToken: req.csrfToken()});
+            return res.render('login', {csrfToken: req.csrfToken(), logged_in: !!req.user});
         }
 
         // if logged in, use client-side session to stay logged in
@@ -37,7 +37,7 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/register', (req, res) => {
-    res.render('register', {csrfToken: req.csrfToken()});
+    res.render('register', {csrfToken: req.csrfToken(), logged_in: !!req.user});
 });
 
 // OWASP guidelines: https://www.owasp.org/index.php/Authentication_Cheat_Sheet
@@ -72,7 +72,7 @@ router.post('/register', (req, res) => {
     const password_strength = check_password_strength(req.body.email, req.body.password);
     if (!password_strength.strong) {
         // todo - use the nice error messages in the rendering so the user can see them
-        return res.render('register', {csrfToken: req.csrfToken()});
+        return res.render('register', {csrfToken: req.csrfToken(), logged_in: false});
     }
 
     // make sure to replace pw with hashed password before storing the user
@@ -89,7 +89,7 @@ router.post('/register', (req, res) => {
                 error = "email taken";
             }
             // not a PRG, but should be fine
-            return res.render('register', {csrfToken: req.csrfToken()});
+            return res.render('register', {csrfToken: req.csrfToken(), logged_in: false});
         }
         return res.redirect('login');
     });
