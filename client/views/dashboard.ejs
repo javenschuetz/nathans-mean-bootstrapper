@@ -5,19 +5,26 @@
 
   <!-- style -->
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/static/styles/main.css" />
 
 </head>
 <body ng-app="backbone_app">
 
   <% include ./partials/nav-bar.ejs %>
+  <div class="main-wrap">
+
+  <div style="flex-grow: 1">
   Welcome, <%= user.first_name %>!
+  </div>
 
   <div ng-controller="sanity_check_ctrl">
     sanity check - did angular load? {{loaded}}
   </div>
   <br>
 
-  <div ng-view></div>
+  <div ng-view style="flex-grow: 4"></div>
+  <div style="flex-grow: 1">test div 3</div>
+  </div>
 
   <!-- external js-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js"></script>
