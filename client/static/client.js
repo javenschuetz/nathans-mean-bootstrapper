@@ -4,52 +4,46 @@ const pages = '/static';
 
 angular.module('backbone_app', ['ngRoute', 'chart.js'])
 .config(function($routeProvider) {
-	$routeProvider.when('/', {
-		templateUrl: `${pages}/main.html`,
-		controller: 'main_ctrl'
-	}).otherwise({redirectTo: '/'});
+    $routeProvider.when('/', {
+        templateUrl: `${pages}/main.html`,
+        controller: 'main_ctrl'
+    }).otherwise({redirectTo: '/'});
 })
-// .service('dogs_svc', function() {
-// 	let self = this;
-// 	self.breed = 'labradoodle';
-// 	self.name = 'banjo jones';
-//     console.log('asfsadfsd');
-// })
 .controller('main_ctrl', ['$scope', function ($scope) {
-	$scope.loaded = true;
+    $scope.loaded = true;
 }])
 .controller('sanity_check_ctrl', ['$scope', function ($scope) {
-	$scope.loaded = true;
+    $scope.loaded = true;
 }])
 .controller("line_controller", ['$scope', function ($scope) {
-  $scope.foo = 'working';
+    $scope.foo = 'working';
 
-  $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-  $scope.series = ['Series A', 'Series B'];
-  $scope.data = [
-    [65, 59, 80, 81, 56, 55, 40],
-    [28, 48, 40, 19, 86, 27, 90]
-  ];
-  $scope.onClick = function (points, evt) {
-    console.log(points, evt);
-  };
-  $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
-  $scope.options = {
-    scales: {
-      yAxes: [
-        {
-          id: 'y-axis-1',
-          type: 'linear',
-          display: true,
-          position: 'left'
-        },
-        {
-          id: 'y-axis-2',
-          type: 'linear',
-          display: true,
-          position: 'right'
-        }
-      ]
+    const hours_per_day = 24;
+    const upright_minutes = new Array(hours_per_day).fill(null).map(_=> Math.floor(Math.random() * 60));
+
+    $scope.labels = Array.from(Array(hours_per_day).keys()).map( (n) => {
+        if (n === 0) return '12 am';
+        else if (n < 12) return `${n} am`;
+        else if (n === 12) return '12 pm';
+        return `${n-12} pm`;
+    });
+    $scope.series = ['Upright Minutses'];
+    $scope.data = [ upright_minutes ];
+
+    $scope.onClick = function (points, evt) {
+        console.log(points, evt);
+    };
+    $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }];
+    $scope.options = {
+        scales: {
+            yAxes: [
+            {
+                id: 'y-axis-1',
+                type: 'linear',
+                display: true,
+                position: 'left'
+            }
+        ]
     }
   };
 }]);
