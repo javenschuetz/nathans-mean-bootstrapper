@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="utf-8")
+        link(rel="stylesheet", href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
+        link(rel="stylesheet", href="/static/styles/main.css")
+        title Posture Tracking - Dashboard
+    body(ng-app="backbone_app")
+
+        include partials/nav-bar.pug
+
+        .main-wrap
+            div(style="flex-grow: 1")
+                p Welcome, #{user.first_name}!
+                div(ng-controller="sanity_check_ctrl") sanity check - did angular load? {{loaded}}
+            div(ng-view, style="flex-grow: 4")
+            div(style="flex-grow: 1") test div 3
+
+        <!-- external js-->
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-route.min.js")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-resource.min.js")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")
+        script(src="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js")
+
+        <!-- custom js -->
+        script(src="/static/client.js")

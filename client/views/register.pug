@@ -1,0 +1,21 @@
+include partials/top.pug
+
+form(action="/accounts/register", method="post")
+    div
+        label First Name:
+        input(type="text", name="first_name", required)
+    div
+        label Last Name:
+        input(type="text", name="last_name", required)
+    div
+        label Email:
+        input(type="email", name="email", required)
+    div
+        label Password:
+        input(type="password", name="password", required)
+    - var val = csrfToken;
+    input(type="hidden", name="_csrf", value=val, required)
+    div
+        input(type="submit", value="Register")
+
+include partials/bottom.pug

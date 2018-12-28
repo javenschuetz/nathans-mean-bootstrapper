@@ -1,0 +1,15 @@
+header
+    nav
+        .bb-navbar
+            .bb-navbar-header(style="flex-grow: 1")
+                a(href="/")
+                    img(src="/static/images/backbone-logo.png", alt="team backbone logo")
+                    | PostureTracking.com
+            div(style="flex-grow: 4")
+            ul.bb-navbar-items(style="flex-grow: 2")
+                if logged_in
+                    li: a(href="/dashboard") Dashboard
+                    li: a(href="/accounts/logout") Logout
+                else
+                    li: a(href="/accounts/register") Register
+                    li: a(href="/accounts/login") Login

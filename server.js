@@ -15,7 +15,7 @@ const User = require('./accounts/User');              // User Schema
 // ****************************************************************** some setup
 const app = express();
 mongoose.connect('mongodb://localhost/backbone-db');        // maintains a connection to mongo
-app.set('view engine', 'ejs');                              // says 'we're using ejs'
+app.set('view engine', 'pug');                              // templating engine
 app.set('views', `${__dirname}/client/views`);          // says 'our ejs is here'
 app.use('/static', express.static(`${__dirname}/client/static`));  // sort of automatic route handling for this directory
 

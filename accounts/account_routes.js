@@ -91,7 +91,7 @@ router.post('/register', (req, res) => {
             // not a PRG, but should be fine
             return res.render('register', {csrfToken: req.csrfToken(), logged_in: false});
         }
-        return res.redirect('login');
+        return res.redirect('/accounts/login');
     });
 });
 
