@@ -36,6 +36,7 @@ app.use(client_sessions({
     duration: 1000 * 60 * 30,               // 30 minutes
     activeDuration: 1000 * 60 * 5,
     httpOnly: true,
+    sameSite: true,
     secure: true,
     ephemeral: true
 }));
@@ -69,11 +70,26 @@ function login_required(req, res, next) {
     return next();
 }
 
+function login_required_mobile(req, res, next) {
+    // warning todo - commented out for testing
+    // if (!req.user) {
+    //     return res.status(401).send('Unauthorized');
+    // }
+
+    return next();
+}
+
 
 
 // ********************************************************************** routes
 // login, register, logout
 app.use('/accounts', require('./accounts/account_routes'));
+
+
+// todo - is it safe to leave this here?
+// get / post posture records
+app.use(body_parser.json()); // these requests use application/json in the body
+app.use('/posture_records', login_required_mobile, require('./posture_records/posture_record_routes'));
 
 // main app dashboard
 app.get('/dashboard', login_required, (req, res) => {
