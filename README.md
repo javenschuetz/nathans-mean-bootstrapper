@@ -2,26 +2,20 @@
 
 The server code of Team Backbone's Posture monitoring wearable
 
-## Starting and Stopping things
+# Dev Environment setup
 
-Start the server in server mode: `npm run serve`
-	- you can ctrl-c out of this a few seconds later since its using a module
-	  called 'forever' to run
+#### set up virtual machine & vagrant
+1. Download & install Virtual Box
+2. Download & install Vagrant (see below for some commands)
+3. Clone the git repository to some directory
+4. use `vagrant ssh` when within the directory in your terminal to enter the vm
+5. the project directory is mounted at `/vagrant`
+6. `cd scripts/init_machine`
+7. execute the init_machine script
+8. if necessary, run `npm install`
 
-Start the server in dev mode
-	- `npm start`
-
-mongo start: `sudo scripts/start_mongo.sh`
-mongo stop: ctrl-c (or find the pid and kill it)
-	- todo: use services or systemd
-
-## Dev Environment setup
-
-1. clone git repo
-2. go to init machine directory, THEN execute init machine.sh
-3. install npm modules
-	- `npm install`
-4. set up ssh config file
+#### other setup
+1. Set up ssh config file
 	```
 	Host backbone-server
 	    HostName 100.24.164.212
@@ -35,7 +29,7 @@ mongo stop: ctrl-c (or find the pid and kill it)
 	- IdentityFile may be unnecessary if you get your usual public key into the
 	  authorized keys section of the server
 	- you can call Host whatever you want, its just a name for your own use
-5. install & configure robo3T
+2. install & configure robo3T
 	- `sudo snap install robo3t-snap`
 	- create a connection called 'my-computer' with address `localhost:27017`.
 	  This is for connecting to the db on your own machine.
@@ -43,7 +37,7 @@ mongo stop: ctrl-c (or find the pid and kill it)
 	  This is for connecting to the database on the server.
 
 
-## Server set up
+# Server set up
 
 1. create ec2 instance (t2 micro or other cheap type)
 2. security groups:
@@ -78,20 +72,23 @@ mongo stop: ctrl-c (or find the pid and kill it)
 	- `node scripts/seed_database.js`
 	- this script is not idempotent and should not be run more than once
 
+# Appendix
 
-# dev environment pre-setup on windows
+#### Starting and Stopping things
 
-1. Download & install Virtual Box
-2. Download & install Vagrant (see below for some commands)
-3. Clone the git repository to some directory
-3. Google how to set up a Vagrantfile for ubuntu 18.04 (bionic beaver)
-	- this is probably just copy pasting a paragraph of commands from a blog post
-	- todo - include this file in the root of the repository
-4. use `vagrant ssh` when within the directory in your terminal to enter the vm
-5. find this directory mounted at `/vagrant`
-6. copy the contents to some directory and continue as above
+Start the server in server mode: `npm run serve`
+	- you can ctrl-c out of this a few seconds later since its using a module
+	  called 'forever' to run
 
-## some vagrant commands
+Start the server in local dev mode (use this except for prod server)
+	- `npm start`
+
+mongo
+	- start: `sudo scripts/mongo_up.sh`
+	- stop: find the pid and kill it
+
+
+#### some vagrant commands
 
 `vagrant up` - start a vm
 

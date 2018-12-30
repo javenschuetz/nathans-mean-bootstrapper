@@ -24,6 +24,4 @@ sudo ufw allow http
 sudo ufw allow https
 
 # ******************************************************************* enable ufw
-sudo ufw enable
-
-
+sudo ufw --force enable

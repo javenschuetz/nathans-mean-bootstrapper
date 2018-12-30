@@ -16,7 +16,7 @@
 
 readonly sites_enabled_path='/etc/nginx/sites-enabled'
 readonly sites_available_path='/etc/nginx/sites-available'
-readonly init_files_path='init-machine/files'
+readonly init_files_path='files'
 readonly our_site='posturetracking.com'
 
 # install nginx
