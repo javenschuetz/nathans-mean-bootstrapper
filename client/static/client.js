@@ -18,7 +18,8 @@ angular.module('backbone_app', ['ngRoute', 'chart.js'])
 .controller("line_controller", ['$scope', '$http', function ($scope, $http) {
     $scope.foo = 'working';
 
-    $http.get("https://posturetracking.com/posture_records/4edd40c86762e0da120a0003/1/1/1")
+    // good to know that the domain defaults to the origin!
+    $http.get("/posture_records/4edd40c86762e0da120a0003/1/1/1")
     .then((response) => {
         const minutes_per_hour = response.data[0].minutes_per_hour;
 
