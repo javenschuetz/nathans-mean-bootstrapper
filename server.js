@@ -39,7 +39,7 @@ app.use(client_sessions({
         path: '/',
         httpOnly: true,
         sameSite: true,
-        secure: !process.env.IS_DEV,
+        secureProxy: !process.env.IS_DEV,
         ephemeral: true
     }
 }));
