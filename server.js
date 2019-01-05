@@ -35,10 +35,13 @@ app.use(client_sessions({
     secret: process.env.BACKBONE_SECRET,    // basically a symmetric encryption key
     duration: 1000 * 60 * 30,               // 30 minutes
     activeDuration: 1000 * 60 * 5,
-    httpOnly: true,
-    sameSite: true,
-    secure: true,
-    ephemeral: true
+    cookie: {
+        path: '/',
+        httpOnly: true,
+        sameSite: true,
+        secure: !process.env.IS_DEV,
+        ephemeral: true
+    }
 }));
 
 // lookup user ahead of time, must be after client_sessions
