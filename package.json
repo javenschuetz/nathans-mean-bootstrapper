@@ -4,7 +4,7 @@
   "description": "Server for team backbone application",
   "main": "server.js",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js server.js ",
+    "start": "./scripts/start.sh",
     "serve": "./node_modules/forever/bin/forever start server.js",
     "test": "./node_modules/mocha/bin/mocha ./tests"
   },
