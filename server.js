@@ -14,7 +14,8 @@ const User = require('./accounts/User');              // User Schema
 
 // ****************************************************************** some setup
 const app = express();
-mongoose.connect('mongodb://localhost/backbone-db');        // maintains a connection to mongo
+mongoose.connect('mongodb://localhost/backbone-db', {useNewUrlParser: true});        // maintains a connection to mongo
+mongoose.set('useCreateIndex', true);
 app.set('view engine', 'pug');                              // templating engine
 app.set('views', `${__dirname}/client/views`);          // says 'our ejs is here'
 app.use('/static', express.static(`${__dirname}/client/static`));  // sort of automatic route handling for this directory
@@ -113,7 +114,8 @@ app.get('*', (req, res) => {
 
 // ************************************************************** error handling
 app.use((err, req, res, next) => {
-  res.status(500).send("Something broke :( Please try again.");
+    console.error(err);
+    res.status(500).send("Something broke :( Please try again.");
 });
 
 
