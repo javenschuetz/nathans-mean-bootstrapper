@@ -14,6 +14,7 @@ app projects.
 6. `cd scripts/init_machine`
 7. execute the init_machine script
 8. if necessary, run `npm install`
+9. it may be necessary to disable ufw if running locally: `ufw disable`
 
 #### other setup
 1. Set up ssh config file
