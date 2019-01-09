@@ -12,9 +12,9 @@ html(lang="en")
         .main-wrap
             div(style="flex-grow: 1")
                 p Welcome, #{user.first_name}!
-                div(ng-controller="sanity_check_ctrl") sanity check - did angular load? {{loaded}}
+                div(ng-controller="sanity_check_ctrl")
             div(ng-view, style="flex-grow: 4")
-            div(style="flex-grow: 1") test div 3
+            div(style="flex-grow: 1") right-column placeholder
 
         <!-- external js-->
         script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js")
