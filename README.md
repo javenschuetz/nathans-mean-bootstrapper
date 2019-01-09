@@ -1,7 +1,7 @@
 # README
 
 The server code of a MEAN app skeleton, by Nathan Schuetz. For bootstrappig web
-app projects. Code is adapted and generalized from a previous project.
+app projects.
 
 # Dev Environment setup
 
