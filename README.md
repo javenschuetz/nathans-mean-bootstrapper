@@ -1,6 +1,7 @@
 # README
 
-The server code of Team Backbone's Posture monitoring wearable
+The server code of a MEAN app skeleton, by Nathan Schuetz. For bootstrappig web
+app projects. Code is adapted and generalized from a previous project.
 
 # Dev Environment setup
 
@@ -17,15 +18,19 @@ The server code of Team Backbone's Posture monitoring wearable
 #### other setup
 1. Set up ssh config file
 	```
-	Host backbone-server
-	    HostName 100.24.164.212
+	Host my-server
+	    HostName <ip address>
 	    User ubuntu
 	    Port 22
 	    IdentityFile "~/.ssh/<file containing your ssh key>"
 	    LocalForward 37017 127.0.0.1:27017
 	    AddressFamily inet
 	```
-	- you can now connect via 'ssh backbone-server'
+	- notes
+		- addressfamily inet prevents ipv6, which messes up port forwarding
+		- localforward is for mongo
+		- ubuntu is default username for an ubuntu EC2 instance
+	- you can now connect via 'ssh my-server'
 	- IdentityFile may be unnecessary if you get your usual public key into the
 	  authorized keys section of the server
 	- you can call Host whatever you want, its just a name for your own use
@@ -33,7 +38,7 @@ The server code of Team Backbone's Posture monitoring wearable
 	- `sudo snap install robo3t-snap`
 	- create a connection called 'my-computer' with address `localhost:27017`.
 	  This is for connecting to the db on your own machine.
-	- create a connection called 'backbone-server' with address `localhost:37017`
+	- create a connection called 'my-server' with address `localhost:37017`
 	  This is for connecting to the database on the server.
 
 
@@ -43,15 +48,16 @@ The server code of Team Backbone's Posture monitoring wearable
 2. security groups:
 	- allow http/https from everywhere
 	- allow ssh from anywhere (for now)
-	- allow icmp for echo requests (so ping works during testing)
+	- allow icmp for echo requests (just so that ping works during testing)
 3. ebs
 	- mount an 8GB gp2 for root device
 	- mount the database ebs, or make a new one for the db[1]
 4. vpc
 	- use the default one (for now)
 5. use rsync to transfer the code over
-	- `rsync -avzhe ssh team-backbone-server/ backbone-server:~/team-backbone-server`
+	- `rsync -avzhe ssh node-skeleton-app/ my-server:~/node-skeleton-app`
 	- todo: use some CI tool to stash this code on s3 and use the cli to grab it
+	- todo: use more appropriate directory in /opt for the code
 6. start mongo (instructions above)
 
 1.5. go to init machine directory, THEN execute init machine.sh
@@ -67,10 +73,11 @@ The server code of Team Backbone's Posture monitoring wearable
 	- note: leave owner as 'root'
 		- todo: create a mongodb user instead?
 5. config mongo to use this storage device
-	- make sure the script at scripts/start_mongo.sh is executable
+	- make sure the script at scripts/mongo_up.sh is executable
 6. seed the db with some dummy data (for now)
 	- `node scripts/seed_database.js`
 	- this script is not idempotent and should not be run more than once
+	- todo - this script is out of date currently (jan 2019)
 
 # Appendix
 

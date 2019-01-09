@@ -17,12 +17,15 @@
 sudo add-apt-repository ppa:certbot/certbot -y
 sudo apt-get install python-certbot-nginx -y
 
+echo "error, remember to set the domain value!"
+# exit 1
+
 # obtain tls certificate
 # --nginx means "use the nginx plugin"
 # -d means "the cert is for these domains"
 # 		note - probably, the domains need to match the server_name directive in the nginx
-# 		config file at <sites_enable_path>/posturetracking.com
-sudo certbot --nginx -d posturetracking.com -d www.posturetracking.com \
+# 		config file at <sites_enable_path>/myDomain.com
+sudo certbot --nginx -d myDomain.com -d www.myDomain.com \
 		--rsa-key-size 4096 \
 		--non-interactive --agree-tos \
 		--email mail@nathanschuetz.ca

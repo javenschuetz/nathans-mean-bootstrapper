@@ -14,8 +14,8 @@ const User = require('./accounts/User');              // User Schema
 
 // ****************************************************************** some setup
 const app = express();
-mongoose.connect('mongodb://localhost/backbone-db', {useNewUrlParser: true});        // maintains a connection to mongo
-mongoose.set('useCreateIndex', true);
+mongoose.connect('mongodb://localhost/my-db', {useNewUrlParser: true});        // maintains a connection to mongo. newurlparser should be default, but isnt
+mongoose.set('useCreateIndex', true);               // prevents a warning
 app.set('view engine', 'pug');                              // templating engine
 app.set('views', `${__dirname}/client/views`);          // says 'our ejs is here'
 app.use('/static', express.static(`${__dirname}/client/static`));  // sort of automatic route handling for this directory
@@ -33,14 +33,14 @@ app.use(body_parser.urlencoded({
 // set up client-side sessions
 app.use(client_sessions({
     cookieName: 'session',
-    secret: process.env.BACKBONE_SECRET,    // basically a symmetric encryption key
+    secret: process.env.SESSION_SECRET,    // basically a symmetric encryption key
     duration: 1000 * 60 * 30,               // 30 minutes
     activeDuration: 1000 * 60 * 5,
     cookie: {
         path: '/',
         httpOnly: true,
         sameSite: true,
-        secureProxy: !process.env.IS_DEV,
+        secureProxy: !process.env.IS_DEV,   // client-sessions needs to be patched to handle 'secure' instead of this
         ephemeral: true
     }
 }));
@@ -76,6 +76,9 @@ function login_required(req, res, next) {
 
 function login_required_mobile(req, res, next) {
     // warning todo - commented out for testing
+    // Haven't decided how to implement this yet
+    //
+
     // if (!req.user) {
     //     return res.status(401).send('Unauthorized');
     // }
@@ -90,10 +93,9 @@ function login_required_mobile(req, res, next) {
 app.use('/accounts', require('./accounts/account_routes'));
 
 
-// todo - is it safe to leave this here?
-// get / post posture records
+// template - replace data_records with some db table
 app.use(body_parser.json()); // these requests use application/json in the body
-app.use('/posture_records', login_required_mobile, require('./posture_records/posture_record_routes'));
+app.use('/data_records', login_required_mobile, require('./data_records/data_record_routes'));
 
 // main app dashboard
 app.get('/dashboard', login_required, (req, res) => {
@@ -115,12 +117,12 @@ app.get('*', (req, res) => {
 // ************************************************************** error handling
 app.use((err, req, res, next) => {
     console.error(err);
-    res.status(500).send("Something broke :( Please try again.");
+    res.status(500).send("Something broke :( Please let us know what!");
 });
 
 
 
 // *********************************************************************** serve
 // server listens on port X where Nginx is configured to forward requests to
-const port = process.env.BACKBONE_PORT || 9000;
+const port = process.env.SERVER_PORT || 9000;
 app.listen(port);

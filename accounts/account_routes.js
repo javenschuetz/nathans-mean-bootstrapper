@@ -68,17 +68,17 @@ function check_password_strength(email, password) {
     };
 }
 
-router.post('/register', (req, res) => {
-    const password_strength = check_password_strength(req.body.email, req.body.password);
+function register_user(user_data, cb) {
+    const password_strength = check_password_strength(user_data.email, user_data.password);
     if (!password_strength.strong) {
         // todo - use the nice error messages in the rendering so the user can see them
-        return res.render('register', {csrfToken: req.csrfToken(), logged_in: false});
+        return cb(null, {succeess: false, reason: 'weak password'});
     }
 
     // make sure to replace pw with hashed password before storing the user
-    const hash = bcrypt.hashSync(req.body.password, parseInt(process.env.WORK_FACTOR));
-    req.body.password = hash;
-    let user = new User(req.body);
+    const hash = bcrypt.hashSync(user_data.password, parseInt(process.env.WORK_FACTOR));
+    user_data.password = hash;
+    let user = new User(user_data);
 
     user.save((err) => {
         if (err) {
@@ -89,11 +89,30 @@ router.post('/register', (req, res) => {
                 error = "email taken";
             }
             // not a PRG, but should be fine
-            return res.render('register', {csrfToken: req.csrfToken(), logged_in: false});
+            return cb(null, {success: false, reason: error});
         }
-        return res.redirect('/accounts/login');
+        return cb(null, {success: true, user: user});
+    });
+}
+
+router.post('/register', (req, res) => {
+    register_user(req.body, (err, registration_result) => {
+        if (!registration_result.success || err) {
+        return res.render('register', {csrfToken: req.csrfToken(), logged_in: false});
+    }
+    return res.redirect('/accounts/login');
     });
 });
+
+// router.post('/register_mobile', (req, res) => {
+//     const registration_result = register_user(req.body);
+//     if (!registration_result.success) {
+//         res.status(400);
+//         return res.json({error: registration_result.reason});
+//     }
+//     res.status(400);
+//     return res.json({user_id: registration_result.user.id});
+// });
 
 router.get('/logout', (req, res) => {
     req.session.reset();

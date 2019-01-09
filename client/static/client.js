@@ -2,7 +2,7 @@
 
 const pages = '/static';
 
-angular.module('backbone_app', ['ngRoute', 'chart.js'])
+angular.module('app', ['ngRoute', 'chart.js'])
 .config(function($routeProvider) {
     $routeProvider.when('/', {
         templateUrl: `${pages}/main.html`,
@@ -19,9 +19,9 @@ angular.module('backbone_app', ['ngRoute', 'chart.js'])
     $scope.foo = 'working';
 
     // good to know that the domain defaults to the origin!
-    $http.get("/posture_records/4edd40c86762e0da120a0003/1/1/1")
+    $http.get("/data_records/4edd40c86762e0da120a0003/1/1/1")
     .then((response) => {
-        const minutes_per_hour = response.data[0].minutes_per_hour;
+        const events_per_hour = response.data[0].events_per_hour;
 
         $scope.labels = Array.from(Array(24).keys()).map( (n) => {
             if (n === 0) return '12 am';
@@ -29,8 +29,8 @@ angular.module('backbone_app', ['ngRoute', 'chart.js'])
             else if (n === 12) return '12 pm';
             return `${n-12} pm`;
         });
-        $scope.series = ['Upright Minutes'];
-        $scope.data = [ minutes_per_hour ];
+        $scope.series = ['Events'];
+        $scope.data = [ events_per_hour ];
 
         $scope.onClick = function (points, evt) {
             console.log(points, evt);

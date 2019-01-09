@@ -1,7 +1,7 @@
 {
-  "name": "team-backbone-server",
+  "name": "lean-mean-template-machine",
   "version": "0.0.1",
-  "description": "Server for team backbone application",
+  "description": "Template nodejs app to bootstrap future projects",
   "main": "server.js",
   "scripts": {
     "start": "./scripts/start.sh",
@@ -22,8 +22,6 @@
     "helmet": "^3.15.0",
     "mongodb": "^3.1.9",
     "mongoose": "^5.4.0",
-    "passport": "^0.4.0",
-    "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "pug": "^2.0.3"
   },
